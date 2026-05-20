@@ -162,14 +162,14 @@ class CPU:
             b = self.read_reg(rs2)
             
             if a != b:
-                self.pc += Bimm
+                self.pc += Bimm -4 #accounting for fde cycle
             
         elif (opcode == 0b1011111): #JAL
             
             print(f"debug: jal {rd}, {Jimm}")
             
             self.write_reg(rd, self.pc + 4)
-            self.pc += Jimm
+            self.pc += Jimm -4 #accounting for fde cycle
             
         elif (opcode == 0b1100111 and
               funct3 == 0b000): #JALR
@@ -178,7 +178,7 @@ class CPU:
             
             self.write_reg(rd, self.pc + 4)
             r = self.read_reg(rs1)
-            self.pc += r + Iimm
+            self.pc += r + Iimm -4 #accounting for fde cycle
             
         else:
             print("debug: unrecognized instruction")
