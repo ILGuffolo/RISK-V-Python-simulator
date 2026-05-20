@@ -1,0 +1,5 @@
+addi x1, x1, 10
+addi x2, x2, 5
+add x3, x1, x2
+bne x10 x0 4
+jal x10 -16
