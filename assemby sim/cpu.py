@@ -44,19 +44,19 @@ class CPU:
             value -= 2**bit_len
         return value
     
-    def run_cycle(self):
+    def run_cycle(self, debug = False):
         instr = self.fetch()
-        self.execute(instr)
+        self.execute(instr, debug)
         self.pc += 4
         
-    def run_program(self):
+    def run_program(self, debug = False ):
         instr = self.fetch()
         
         while instr != 0:
-            self.run_cycle()
+            self.run_cycle(debug)
             instr = self.fetch()
     
-    def execute(self, instr): # --- INSTRUCTION SET --- #
+    def execute(self, instr, debug = False): # --- INSTRUCTION SET --- #
         
         # constant
         opcode = self.bits(instr, 0, 7)
@@ -96,7 +96,7 @@ class CPU:
             funct3 == 0b000 and
             funct7 == 0b000000): #ADD
             
-            print(f"debug: add {rd}, {rs1}, {rs2}")
+            if debug : print(f"debug: add {rd}, {rs1}, {rs2}")
             
             a = self.read_reg(rs1)
             b = self.read_reg(rs2)
@@ -107,7 +107,7 @@ class CPU:
               funct3 == 0b000 and
               funct7 == 0b010000): #SUB
             
-            print(f"debug: sub {rd}, {rs1}, {rs2}")
+            if debug : print(f"debug: sub {rd}, {rs1}, {rs2}")
             
             a = self.read_reg(rs1)
             b = self.read_reg(rs2)
@@ -117,7 +117,7 @@ class CPU:
         elif (opcode == 0b0010011 and
               funct3 == 0b000): #ADDI
             
-            print(f"debug: addi {rd}, {rs1}, {Iimm}")
+            if debug : print(f"debug: addi {rd}, {rs1}, {Iimm}")
             
             a = self.read_reg(rs1)
 
@@ -126,7 +126,7 @@ class CPU:
         elif (opcode == 0b0000011 and
               funct3 == 0b010): #LW
             
-            print(f"debug: lw {rd}, {rs1}, {Iimm}")
+            if debug : print(f"debug: lw {rd}, {rs1}, {Iimm}")
             
             r = self.read_reg(rs1)
             
@@ -136,7 +136,7 @@ class CPU:
         elif (opcode == 0b0100011 and
               funct3 == 0b010): #SW
             
-            print(f"debug: sw {rs1}, {rs2}, {Simm}")
+            if debug : print(f"debug: sw {rs1}, {rs2}, {Simm}")
             
             r = self.read_reg(rs1)
             self.store_word(r + Simm, self.read_reg(rs2))
@@ -145,7 +145,7 @@ class CPU:
         elif (opcode == 0b1100011 and
               funct3 == 0b000): #BEQ
             
-            print(f"debug: beq {rs1}, {rs2}, {Bimm}")
+            if debug : print(f"debug: beq {rs1}, {rs2}, {Bimm}")
             
             a = self.read_reg(rs1)
             b = self.read_reg(rs2)
@@ -156,7 +156,7 @@ class CPU:
         elif (opcode == 0b1100011 and
               funct3 == 0b001): #BNE
             
-            print(f"debug: bne {rs1}, {rs2}, {Bimm}")
+            if debug : print(f"debug: bne {rs1}, {rs2}, {Bimm}")
             
             a = self.read_reg(rs1)
             b = self.read_reg(rs2)
@@ -166,7 +166,7 @@ class CPU:
             
         elif (opcode == 0b1011111): #JAL
             
-            print(f"debug: jal {rd}, {Jimm}")
+            if debug : print(f"debug: jal {rd}, {Jimm}")
             
             self.write_reg(rd, self.pc + 4)
             self.pc += Jimm -4 #accounting for fde cycle
@@ -174,13 +174,13 @@ class CPU:
         elif (opcode == 0b1100111 and
               funct3 == 0b000): #JALR
             
-            print(f"debug: jalr {rd}, {rs1}, {Iimm}")
+            if debug : print(f"debug: jalr {rd}, {rs1}, {Iimm}")
             
             self.write_reg(rd, self.pc + 4)
             r = self.read_reg(rs1)
             self.pc += r + Iimm -4 #accounting for fde cycle
             
         else:
-            print("debug: unrecognized instruction")
+            if debug : print("debug: unrecognized instruction")
                 
     
