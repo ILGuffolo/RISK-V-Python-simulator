@@ -5,12 +5,16 @@ simulator envriomonet
 from cpu import CPU
 import program_encoder as enc
 
-def instruction_loader(cpu :CPU, instructions):
+def instruction_loader(cpu :CPU, instructions, debug = False):
+    if debug : print("\nTraslation initialized")
+    
     idx = 0
     for inst in instructions:
-        inscode = enc.traslate(inst)
+        inscode = enc.traslate(inst, debug)
         cpu.store_word(idx, inscode)
         idx += 4
+        
+    if debug : print("Tralsation finished\n")
 
 def extract_code(filename):
 
@@ -38,8 +42,9 @@ lines = extract_code("program.txt")
 
 cpu = CPU()
 
-instruction_loader(cpu, lines)
+instruction_loader(cpu, lines, True)
 
-cpu.run_program()
+cpu.run_program(True)
 
+print("registers value:")
 print(cpu.regs)

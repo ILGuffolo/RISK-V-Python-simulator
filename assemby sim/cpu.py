@@ -50,11 +50,15 @@ class CPU:
         self.pc += 4
         
     def run_program(self, debug = False ):
+        if debug : print("\nExecution started")
+        
         instr = self.fetch()
         
         while instr != 0:
             self.run_cycle(debug)
             instr = self.fetch()
+            
+        if debug : print("Execution finished\n")
     
     def execute(self, instr, debug = False): # --- INSTRUCTION SET --- #
         
