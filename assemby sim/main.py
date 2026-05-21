@@ -46,5 +46,5 @@ instruction_loader(cpu, lines, True)
 
 cpu.run_program(True)
 
-print("registers value:")
+print("\nRegisters value:")
 print(cpu.regs)

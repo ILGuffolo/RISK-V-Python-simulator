@@ -1,5 +1,6 @@
-addi t0, t0, 10
-addi t1, t1, 7
-add t2, t0, t1
-bne ra, zero, 8
-jal ra, -16
+addi a7, a7, 8
+addi a0, a0, 40
+addi a1, a1, 10
+ecall
+addi a7, a7, -4
+ecall

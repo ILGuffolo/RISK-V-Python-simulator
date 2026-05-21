@@ -7,6 +7,7 @@ class CPU:
         self.regs = [0] * 32
         self.pc = 0
         self.memory = bytearray(memory_size)
+        self.exitCode = False
         
     def read_reg(self, idx):
         if idx == 0:
@@ -56,6 +57,12 @@ class CPU:
         
         while instr != 0:
             self.run_cycle(debug)
+            
+            if self.exitCode:
+                self.exitCode = False
+                if debug : print("System exit")
+                return
+        
             instr = self.fetch()
             
         if debug : print("Execution finished\n")
@@ -69,6 +76,7 @@ class CPU:
         funct3 = self.bits(instr, 12, 3)
         rs1    = self.bits(instr, 15, 5)
         rs2    = self.bits(instr, 20, 5)
+        
         
         # R-type
         funct7 = self.bits(instr, 25, 7)
@@ -186,10 +194,53 @@ class CPU:
             r = self.read_reg(rs1)
             self.pc += r + Iimm -4 #accounting for fde cycle
         
-        elif (opcode == 0b1011111): #ECALL
-            print("!!!TO DOO!!! (im talking about ecall execution (slide 5) )")
+        elif (opcode == 0b1110011): #ECALL
+            
+            code = 17
+            arg0 = 10
+            arg1 = 11
+            
+            if debug : print(f"debug: ecall (a0:{self.read_reg(arg0)} - a1:{self.read_reg(arg1)} - a7:{self.read_reg(code)})")
+            
+            match self.read_reg(code):
+                case 1: # Print integer
+                    print(self.read_reg(arg0))
+                    
+                case 4: # Print string
+                    idx = 0
+                    char = self.memory[self.read_reg(arg0)]
+                    while char != 0x00:
+                        print(chr(char), end="")
+                        idx += 1
+                        char = self.memory[self.read_reg(arg0) + idx]
+                    print("\n", end="")
+                    
+                case 5: # Read integer
+                    c = input(">>> ")
+                    self.write_reg(arg0, ord(c))
+                    
+                case 8: # Read string
+                    str = input(">>> ")
+                    idx = 0
+                    max_len = self.read_reg(arg1)
+                    for c in str[:max_len]:
+                        self.memory[self.read_reg(arg0) + idx] = ord(c)
+                        #print(f"saved {c} as {hex(ord(c))} in {self.read_reg(arg0) + idx}")
+                        idx += 1
+                    
+                case 10: # Exit program
+                    self.exitCode = True
+                
+                case 11: # Print char
+                    print(chr(self.read_reg(arg0)))
+                    
+                case 12: #  Read Char
+                    c = input(">>> ")
+                    self.write_reg(arg0, ord(c[0]))
             
         else:
-            if debug : print("debug: unrecognized instruction")
+            if debug :
+                print("debug: unrecognized instruction")
+                #print(bin(instr & 0xFFFFFFFF))
                 
     

@@ -40,6 +40,17 @@ jal rd imm : (rd) = pc + 4; pc += imm
 
 jalr rd rs1 imm : (rd) = pc + 4; pc += (rs1) + imm
 
+ecall *
+
+* Code (a7) - Call name - Notes:
+ 1 - Print integer - value of a0
+ 4 - Print string - a0 = index of string
+ 5 - Read integer - saved in a0
+ 8 - Read string - a0 index of buffer, a1 = max lenght
+ 10 - Exit program
+ 11 - Print char - a0 = char code
+ 12 - Read char - saved in a0
+
 # Aliases
 zero : x0 Constant 0
 
