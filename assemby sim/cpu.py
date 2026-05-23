@@ -3,7 +3,7 @@ CPU class and instruction interpreter
 '''
 
 class CPU:
-    def __init__(self, memory_size=1024 * 64):
+    def __init__(self, memory_size=1024 * 4):
         self.regs = [0] * 32
         self.pc = 0
         self.memory = bytearray(memory_size)

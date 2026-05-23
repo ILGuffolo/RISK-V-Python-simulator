@@ -149,6 +149,15 @@ aliases = {
     "t6" : "x31",  # .
         
     }
+inverse_lookup = {v: k for k, v in aliases.items()}
+
+
+def inverse_reg_conversion(idx):
+
+    s = f"x{idx}"          # convert int to string with 'x' prefix
+    converted = inverse_lookup.get(s, s)  # replace if found
+
+    return converted
 
 def traslate(line, debug = False): # --- TRANSLATOR --- #
     

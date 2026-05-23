@@ -47,4 +47,8 @@ instruction_loader(cpu, lines, True)
 cpu.run_program()
 
 print("\nRegisters value:")
-print(cpu.regs)
+for rg in range(len(cpu.regs)) :
+    if cpu.regs[rg] != 0 :
+        print(f"{enc.inverse_reg_conversion(rg)} = {cpu.regs[rg]}")
+
+
